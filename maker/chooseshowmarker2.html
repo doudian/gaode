@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>输入提示后查询</title>
+    <link rel="stylesheet" href="https://cache.amap.com/lbs/static/main.css"/>
+    <script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+    <script type="text/javascript"
+            src="https://webapi.amap.com/maps?v=1.4.3&key=c93e1e293e5b1c3dc581f3ff633144d3&plugin=AMap.Autocomplete,AMap.PlaceSearch,AMap.Walking,AMap.Riding"></script>
+    <style type="text/css">
+        body {
+            font-size: 12px;
+        }
+
+
+         #mapContainer{
+             margin-top: 30px;
+         }
+
+    </style>
+</head>
+<body>
+<div class = "chooseShow">
+    <label><input id = "place1" name="银河SOHO" type="checkbox" value="" />银河SOHO</label>
+    <label><input id = "place2" name="北京师范大学" type="checkbox" value="" />北京师范大学</label>
+    <label><input id = "place3" name="清华大学" type="checkbox" value="" />清华大学</label>
+    <label><input id = "place4"name="北京站" type="checkbox" value="" />北京站</label>
+</div>
+
+
+<div id="mapContainer"></div>
+<!--<div id="tip">
+    <input type="text" id="keyword" name="keyword" value="请输入关键字：(选定后搜索)" onfocus='this.value=""'/>
+</div>-->
+
+<script type="text/javascript">
+    var windowsArr = [];
+    var marker = [];
+    var map = new AMap.Map("mapContainer", {
+        resizeEnable: true,
+        center: [116.397428, 39.90923],//地图中心点
+        zoom: 13,//地图显示的缩放级别
+        keyboardEnable: false
+    });
+    AMap.plugin(['AMap.Autocomplete','AMap.PlaceSearch'],function(){
+        var autoOptions = {
+            city: "北京", //城市，默认全国
+            input: "keyword"//使用联想输入的input的id
+        };
+        autocomplete= new AMap.Autocomplete(autoOptions);
+        var placeSearch = new AMap.PlaceSearch({
+            city:'北京',
+            map:map
+        });
+
+
+        /*AMap.event.addListener(autocomplete, "select", function(e){
+            //TODO 针对选中的poi实现自己的功能
+            placeSearch.setCity(e.poi.adcode);
+
+            console.log(e.poi.name);
+
+            /!*placeSearch.search("清华大学")*!/
+        });
+*/
+
+        placeSearch.search("银河SOHO");
+
+        $('input:checkbox:first').attr("checked",'checked');
+
+        $('.chooseShow input:checkbox').click(function () {
+
+            $('input:checkbox').removeAttr("checked");
+            $(this).attr("checked",'checked');
+
+        });
+        $("#place2").click(function () {
+            $('input:checkbox').removeAttr("checked");
+            $(this).attr("checked");
+        });
+
+        placeSearch.search("");
+
+
+
+
+    });
+
+</script>
+
+<script type="text/javascript" src="https://webapi.amap.com/demos/js/liteToolbar.js"></script>
+</body>
+</html>

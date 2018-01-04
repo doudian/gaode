@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <style type="text/css">
+        body,html,#container{
+            height: 100%;
+            margin: 0px
+        }
+        .panel {
+            background-color: #ddf;
+            color: #333;
+            border: 1px solid silver;
+            box-shadow: 3px 4px 3px 0px silver;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            line-height: 20px;
+        }
+        #input{
+            width: 250px;
+            height: 25px;
+            border: 0;
+        }
+    </style>
+    <title>地址与经纬度</title>
+    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+
+</head>
+<body>
+<div id="container" tabindex="0"></div>
+<!--<div class ='panel'>
+    <input id = 'input' value = '点击地图显示地址/输入地址显示位置' onfocus = 'this.value=""'></input>
+    <div id = 'message'></div>
+</div>-->
+<input type="button" class="button" value="删除多个点标记" id="clearMarker" style = "position: fixed; bottom: 130px; right: 60px;"/>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.2&key=b7139054dd8a485b5d10500ff6c57802"></script>
+
+<script type="text/javascript">
+    var map = new AMap.Map('container',{
+        resizeEnable: true,
+        zoom: 16,
+        center: [116.368904, 39.923423]
+    });
+
+
+    var lnglat = new AMap.LngLat(116.368904, 39.923423);
+
+    var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
+
+    AMap.plugin('AMap.Geocoder',function(){
+
+        map.on('click',markerClick);
+        icon = new AMap.Icon({
+            image : 'img/mark_r.png',//24px*24px
+            //icon可缺省，缺省时为默认的蓝色水滴图标，
+            size : new AMap.Size(38,60)
+        });
+        var marker0 = new AMap.Marker({
+            icon : icon,
+            map:map,
+            bubble:true
+        });
+        var marker = new AMap.Marker({
+            map:map,
+            bubble:false
+        });
+
+        //创建右键菜单
+        var contextMenu = new AMap.ContextMenu();
+
+        //右键放大
+        contextMenu.addItem("删除", function() {
+            map.remove(marker);
+            infoWindow.close();
+        }, 0);
+
+        marker.setPosition(new AMap.LngLat(126.268904, 39.923423));
+
+
+       /* markers.push(marker);
+
+        var _onClick = function(e) {
+            alert('您点击了点');
+        };*/
+
+        var _onRightClick = function(e) {
+            contextMenu.open(map, e.lnglat);
+        };
+
+
+        function markerClick(e) {
+
+
+
+            marker.setPosition(e.lnglat);
+
+
+            var lng = e.lnglat.lng;
+            var lat = e.lnglat.lat;
+            var distance = (lnglat.distance([lng, lat]) / 1000.0).toFixed(2);
+
+            infoWindow.setContent(lng + ","+ lat + "<br>" + distance + "km");
+
+            infoWindow.open(map,e.lnglat);
+
+
+            /*AMap.event.addListener(marker, 'click', _onClick);
+            AMap.event.addListener(marker, 'rightclick', _onRightClick);*/
+
+
+        }
+
+
+    });
+
+
+
+
+
+</script>
+<script type="text/javascript" src="https://webapi.amap.com/demos/js/liteToolbar.js"></script>
+
+</body>
+</html>
+
+<!--
+覆盖物添加右键菜单
+http://lbs.amap.com/api/javascript-api/example/contextmenu/add-contextmenu-to-overlayer
+
+-->
